@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  api_server:
+    image: cosmicbox-api-server
+    build: .
+    ports:
+      - "80:9000"
+    environment:
+      GIN_MODE: "release"
+      DB_DRIVER: "postgres"
+      DB_CONFIG: "postgres://cosmic:safe-password@database:5432/cosmic?sslmode=disable"
+  database:
+    image: postgres:10.0-alpine
+    environment:
+      POSTGRES_PASSWORD: "safe-password"
+      POSTGRES_USER: "cosmic"
+      POSTGRES_DB: "cosmic"
