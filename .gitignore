@@ -1,2 +1,4 @@
 *_gen.go
 .DS_Store
+vendor
+*.sqlite
