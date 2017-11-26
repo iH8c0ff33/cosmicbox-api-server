@@ -23,6 +23,18 @@ var serverFlags = []cli.Flag{
 		Usage:  "server address",
 		Value:  ":9000",
 	},
+	cli.StringFlag{
+		EnvVar: "COSMIC_DB_DRIVER,DB_DRIVER",
+		Name:   "driver",
+		Usage:  "database driver",
+		Value:  "sqlite3",
+	},
+	cli.StringFlag{
+		EnvVar: "COSMIC_DB_DATASOURCE,DB_CONFIG",
+		Name:   "datasource",
+		Usage:  "database driver config string",
+		Value:  "cosmic.sqlite",
+	},
 }
 
 func server(c *cli.Context) error {

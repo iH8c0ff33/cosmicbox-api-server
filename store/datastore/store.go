@@ -22,7 +22,7 @@ type Datastore struct {
 // New creates a new database connection using config string
 func New(driver, config string) store.Store {
 	return &Datastore{
-		DB:     nil,
+		DB:     connect(driver, config),
 		driver: driver,
 		config: config,
 	}

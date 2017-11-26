@@ -10,7 +10,7 @@ import (
 
 // GetEventsCount shows the number of events in the db
 func GetEventsCount(c *gin.Context) {
-	count, err := store.FromContext(c).GetEventCount()
+	count, err := store.FromContext(c).GetEventsCount()
 	if err != nil {
 		c.String(500, "error getting events count: %s", err)
 		return
