@@ -2,5 +2,5 @@
 
 CREATE TABLE IF NOT EXISTS events (
   event_id        INTEGER PRIMARY KEY AUTOINCREMENT,
-  event_timestamp TIMESTAMP DATETIME
+  event_timestamp DATETIME
 )

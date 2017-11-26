@@ -11,7 +11,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-var flags = []cli.Flag{
+var serverFlags = []cli.Flag{
 	cli.BoolFlag{
 		EnvVar: "COSMIC_DEBUG",
 		Name:   "debug",
@@ -22,18 +22,6 @@ var flags = []cli.Flag{
 		Name:   "server-addr",
 		Usage:  "server address",
 		Value:  ":9000",
-	},
-	cli.StringFlag{
-		EnvVar: "COSMIC_DB_DRIVER,DB_DRIVER",
-		Name:   "driver",
-		Usage:  "database driver",
-		Value:  "sqlite3",
-	},
-	cli.StringFlag{
-		EnvVar: "COSMIC_DB_DATASOURCE,DB_CONFIG",
-		Name:   "datasource",
-		Usage:  "database driver config string",
-		Value:  "cosmic.sqlite",
 	},
 }
 

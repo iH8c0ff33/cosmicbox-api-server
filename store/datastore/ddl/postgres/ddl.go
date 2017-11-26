@@ -1,3 +1,3 @@
 package postgres
 
-//go:generate togo ddl -package postgres -dialect postgres
+//go:generate togo ddl -package postgres -dialect postgres -input *.sql

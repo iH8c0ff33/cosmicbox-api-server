@@ -11,8 +11,8 @@ import (
 type Store interface {
 	GetUser(int64) (*model.User, error)
 	GetUserByLogin(string) (*model.User, error)
-	GetUserList() ([]*model.User, error)
-	GetUserCount() (int, error)
+	GetAllUsers() ([]*model.User, error)
+	GetUsersCount() (int, error)
 	CreateUser(*model.User) error
 	UpdateUser(*model.User) error
 	DeleteUser(*model.User) error
@@ -22,60 +22,23 @@ type Store interface {
 	GetEventsByTimestamp(timestamp time.Time) ([]*model.Event, error)
 	GetEventsInRange(start, end time.Time) ([]*model.Event, error)
 	DeleteEvent(event *model.Event) error
-	GetEventCount() (count int, err error)
+	GetEventsCount() (count int, err error)
 }
 
-// GetUser gets a user by ID
-func GetUser(c context.Context, id int64) (*model.User, error) {
-	return FromContext(c).GetUser(id)
+const key = "store"
+
+// Settable is a context which can be `Set`
+type Settable interface {
+	Set(string, interface{})
 }
 
-// GetUserByLogin gets a user by its login name
-func GetUserByLogin(c context.Context, login string) (*model.User, error) {
-	return FromContext(c).GetUserByLogin(login)
+// FromContext gets the Store from the supplied context
+// NOTE: Will panic if Store can't be get from context
+func FromContext(c context.Context) Store {
+	return c.Value(key).(Store)
 }
 
-// GetUserList gets the list of all the users
-func GetUserList(c context.Context) ([]*model.User, error) {
-	return FromContext(c).GetUserList()
-}
-
-// CreateUser creates a user in the store
-func CreateUser(c context.Context, user *model.User) error {
-	return FromContext(c).CreateUser(user)
-}
-
-// UpdateUser updates information about a user
-func UpdateUser(c context.Context, user *model.User) error {
-	return FromContext(c).UpdateUser(user)
-}
-
-// DeleteUser deletes a user from the store
-func DeleteUser(c context.Context, user *model.User) error {
-	return FromContext(c).DeleteUser(user)
-}
-
-// CreateEvent creates an event in the store
-func CreateEvent(c context.Context, event *model.Event) error {
-	return FromContext(c).CreateEvent(event)
-}
-
-// GetEvent gets an event by ID
-func GetEvent(c context.Context, id int64) (*model.Event, error) {
-	return FromContext(c).GetEvent(id)
-}
-
-// GetEventsInRange gets events within timestamps
-func GetEventsInRange(c context.Context, start, end time.Time) ([]*model.Event, error) {
-	return FromContext(c).GetEventsInRange(start, end)
-}
-
-// GetEventCount gets the event count
-func GetEventCount(c context.Context) (count int, err error) {
-	return FromContext(c).GetEventCount()
-}
-
-// DeleteEvent deletes an event from the store
-func DeleteEvent(c context.Context, event *model.Event) error {
-	return FromContext(c).DeleteEvent(event)
+// ToContext sets the store in a `Settable`
+func ToContext(c Settable, store Store) {
+	c.Set(key, store)
 }

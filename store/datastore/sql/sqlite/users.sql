@@ -10,7 +10,7 @@ SELECT
   user_hash
 FROM users
 ORDER BY user_login
-  ASC
+  ASC;
 
 -- name: user-find-login
 
@@ -24,7 +24,7 @@ SELECT
   user_hash
 FROM users
 WHERE user_login = ?
-LIMIT 1
+LIMIT 1;
 
 -- name: user-update
 
@@ -35,9 +35,9 @@ SET
   user_expiry = ?,
   user_email  = ?,
   user_hash   = ?
-WHERE user_id = ?
+WHERE user_id = ?;
 
 -- name: user-delete
 
 DELETE FROM users
-WHERE user_id = ?
+WHERE user_id = ?;

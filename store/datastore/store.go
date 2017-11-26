@@ -12,16 +12,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-type datastore struct {
+// Datastore is a database connection
+type Datastore struct {
 	*sql.DB
 	driver string
 	config string
 }
 
-// New creates a new db connection returning the Store
+// New creates a new database connection using config string
 func New(driver, config string) store.Store {
-	return &datastore{
-		DB:     open(driver, config),
+	return &Datastore{
+		DB:     nil,
 		driver: driver,
 		config: config,
 	}
@@ -29,86 +30,76 @@ func New(driver, config string) store.Store {
 
 // From creates a Store from a db connection
 func From(db *sql.DB) store.Store {
-	return &datastore{DB: db}
-}
-
-func open(driver, config string) *sql.DB {
-	db, err := sql.Open(driver, config)
-	if err != nil {
-		logrus.Errorln(err)
-		logrus.Fatalln("db connection failed")
-	}
-	if driver == "mysql" {
-		db.SetMaxIdleConns(0)
-	}
-
-	setupMeddler(driver)
-
-	if err := pingDatabase(db); err != nil {
-		logrus.Errorln(err)
-		logrus.Fatalln("db ping has failed")
-	}
-
-	if err := setupDatabase(driver, db); err != nil {
-		logrus.Errorln(err)
-		logrus.Fatalln("migration did not succeed")
-	}
-
-	return db
-}
-
-func openTest() *sql.DB {
-	var (
-		driver = "sqlite3"
-		config = ":memory:"
-	)
-	if os.Getenv("DB_DRIVER") != "" {
-		driver = os.Getenv("DB_DRIVER")
-		config = os.Getenv("DB_CONFIG")
-	}
-
-	return open(driver, config)
-}
-
-func newTest() *datastore {
-	var (
-		driver = "sqlite3"
-		config = ":memory:"
-	)
-	if os.Getenv("DB_DRIVER") != "" {
-		driver = os.Getenv("DB_DRIVER")
-		config = os.Getenv("DB_CONFIG")
-	}
-
-	return &datastore{
-		DB:     open(driver, config),
-		driver: driver,
-		config: config,
-	}
+	return &Datastore{DB: db}
 }
 
 func pingDatabase(db *sql.DB) (err error) {
+	// try pinging the database at most 30 times
 	for i := 0; i < 30; i++ {
 		err = db.Ping()
+
 		if err == nil {
+			// ping succeeded
 			return
 		}
-		logrus.Infof("failed to ping db. retrying in 1s")
+
+		logrus.Infof("db: ping failed. trying again in 1s")
 		time.Sleep(time.Second)
 	}
 	return
 }
 
-func setupDatabase(driver string, db *sql.DB) error {
+// connect is used internally to create a db connection
+func connect(driver, config string) *sql.DB {
+	db, err := sql.Open(driver, config)
+	if err != nil {
+		logrus.Errorln(err)
+		logrus.Fatalln("db: connection failed!")
+	}
+
+	configureMeddler(driver)
+
+	if err := pingDatabase(db); err != nil {
+		logrus.Errorln(err)
+		logrus.Fatalln("db: ping has failed!")
+	}
+
+	if err := runMigrations(driver, db); err != nil {
+		logrus.Errorln(err)
+		logrus.Fatalln("db: migration did not succeed!")
+	}
+
+	return db
+}
+
+// NewTestDb is only used for testing purposes
+func NewTestDb() *Datastore {
+	var (
+		driver = "sqlite3"
+		config = ":memory:"
+	)
+
+	if os.Getenv("DB_DRIVER") != "" {
+		driver = os.Getenv("DB_DRIVER")
+		config = os.Getenv("DB_CONFIG")
+	}
+
+	return &Datastore{
+		DB:     connect(driver, config),
+		driver: driver,
+		config: config,
+	}
+}
+
+// runMigrations runs migrations given a driver and a db connection
+func runMigrations(driver string, db *sql.DB) error {
 	return ddl.Migrate(driver, db)
 }
 
-func setupMeddler(driver string) {
+func configureMeddler(driver string) {
 	switch driver {
 	case "sqlite3":
 		meddler.Default = meddler.SQLite
-	case "mysql":
-		meddler.Default = meddler.MySQL
 	case "postgres":
 		meddler.Default = meddler.PostgreSQL
 	}

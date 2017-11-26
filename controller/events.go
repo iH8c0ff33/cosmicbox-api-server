@@ -8,8 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// GetEventsCount shows the number of events in the db
 func GetEventsCount(c *gin.Context) {
-	count, err := store.GetEventCount(c)
+	count, err := store.FromContext(c).GetEventCount()
 	if err != nil {
 		c.String(500, "error getting events count: %s", err)
 		return
@@ -17,6 +18,7 @@ func GetEventsCount(c *gin.Context) {
 	c.JSON(200, count)
 }
 
+// PostEvent adds a new event to the db
 func PostEvent(c *gin.Context) {
 	event := &model.Event{}
 	err := c.Bind(event)
@@ -25,7 +27,7 @@ func PostEvent(c *gin.Context) {
 		return
 	}
 
-	if err = store.CreateEvent(c, event); err != nil {
+	if err = store.FromContext(c).CreateEvent(event); err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}

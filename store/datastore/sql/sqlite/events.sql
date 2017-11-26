@@ -5,7 +5,8 @@ SELECT
   event_timestamp
 FROM events
 WHERE event_timestamp = ?
-ORDER BY event_timestamp ASC;
+ORDER BY event_timestamp
+  ASC;
 
 -- name: event-find-range
 
@@ -15,9 +16,10 @@ SELECT
 FROM events
 WHERE event_timestamp >= ?
       AND event_timestamp < ?
-ORDER BY event_timestamp ASC;
+ORDER BY event_timestamp
+  ASC;
 
 -- name: event-delete
 
 DELETE FROM events
-WHERE event_id = ?
+WHERE event_id = ?;

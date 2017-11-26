@@ -20,4 +20,4 @@ ORDER BY event_timestamp ASC;
 -- name: event-delete
 
 DELETE FROM events
-WHERE event_id = $1
+WHERE event_id = $1;
