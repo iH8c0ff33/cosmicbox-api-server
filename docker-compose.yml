@@ -2,8 +2,8 @@ version: '3'
 
 services:
   api_server:
-    image: cosmicbox-api-server
-    build: .
+    image: cosmicbox-api
+    command: server
     ports:
       - "80:9000"
     environment:
@@ -12,7 +12,13 @@ services:
       DB_CONFIG: "postgres://cosmic:safe-password@database:5432/cosmic?sslmode=disable"
   database:
     image: postgres:10.0-alpine
+    volumes:
+      - cosmic-data:/var/lib/postgresql/data
     environment:
       POSTGRES_PASSWORD: "safe-password"
       POSTGRES_USER: "cosmic"
       POSTGRES_DB: "cosmic"
+
+volumes:
+  cosmic-data:
+    driver: local
