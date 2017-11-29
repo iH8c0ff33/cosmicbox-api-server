@@ -10,7 +10,7 @@ type User struct {
 	Login string `json:"login" meddler:"user_login"`
 
 	Token  string    `json:"-" meddler:"user_token"`
-	Secret string    `json:"-" meddler:"user_secret"`
+	Refresh string    `json:"-" meddler:"user_secret"`
 	Expiry time.Time `json:"-" meddler:"user_expiry,localtime" binding:"required"`
 
 	Email string `json:"email" meddler:"user_email"`
