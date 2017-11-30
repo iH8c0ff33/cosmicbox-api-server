@@ -12,9 +12,12 @@
       "remotePath": "",
       "port": 2345,
       "host": "127.0.0.1",
-      "program": "${fileDirname}",
-      "env": {},
-      "args": [],
+      "program": "${workspaceRoot}/main.go",
+      "env": {
+        "COSMIC_DEBUG": "1",
+        "CREDENTIALS_FILE": "/users/daniele/Downloads/oauth_credentials.json"
+      },
+      "args": ["server"],
       "showLog": true
     }
   ]
