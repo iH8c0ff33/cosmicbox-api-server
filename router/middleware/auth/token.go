@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"github.com/sirupsen/logrus"
 	"fmt"
 	"net/http"
 
@@ -20,23 +21,23 @@ const (
 // TokenClaims are the claims inside a token
 type TokenClaims struct {
 	TokenType string `json:"ttype"`
-	Sub  string `json:"sub"`
+	Sub       string `json:"sub"`
 	jwt.StandardClaims
 }
 
 // Parse a token string given a SecretFunc
 func Parse(tokenString string, fn SecretFunc) (*TokenClaims, error) {
-	token, err := jwt.Parse(tokenString, buildKeyFunc(fn))
+	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, buildKeyFunc(fn))
 	if err != nil {
 		return nil, err
 	} else if !token.Valid {
-		return nil, jwt.ValidationError{}
+		return nil, fmt.Errorf("token is not valid")
 	}
 
-	if claims, ok := token.Claims.(TokenClaims); ok {
-		return &claims, nil
+	if claims, ok := token.Claims.(*TokenClaims); ok {
+		return claims, nil
 	}
-	return nil, jwt.ValidationError{}
+	return nil, fmt.Errorf("token claims are not valid")
 }
 
 // ParseFromReq parses a token from an http request
@@ -56,6 +57,8 @@ func ParseFromReq(req *http.Request, fn SecretFunc) (*TokenClaims, error) {
 	} else if err != nil {
 		return nil, err
 	}
+
+	logrus.Debugln("nothing")
 
 	return nil, nil
 }
@@ -87,9 +90,9 @@ func buildKeyFunc(getSecret SecretFunc) jwt.Keyfunc {
 		}
 
 		// Cast claims to expected type and eventually return an error
-		claims, ok := t.Claims.(TokenClaims)
+		claims, ok := t.Claims.(*TokenClaims)
 		if !ok {
-			return nil, jwt.ValidationError{}
+			return nil, fmt.Errorf("token claims are not valid")
 		}
 
 		// Get the secret using the provided function and return the evental error

@@ -166,7 +166,7 @@ func HandleAuth(c *gin.Context) {
 		}
 
 		if err := db.CreateUser(user); err != nil {
-			logrus.Errorf("auth: couldn't insert user %s because of: %s", user.Login, err)
+			logrus.Errorf("auth: couldn't insert user %s -> %s", user.Login, err)
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
@@ -178,7 +178,7 @@ func HandleAuth(c *gin.Context) {
 		user.Expiry = tmpuser.Expiry
 
 		if err := db.UpdateUser(user); err != nil {
-			logrus.Errorf("auth: couldn't update user %s because of: %s", user.Login, err)
+			logrus.Errorf("auth: couldn't update user %s -> %s", user.Login, err)
 			c.AbortWithError(http.StatusInternalServerError, err)
 			return
 		}
@@ -194,21 +194,20 @@ func HandleAuth(c *gin.Context) {
 	}
 	token, err := SignClaims(claims, user.Hash)
 	if err != nil {
-		logrus.Errorf("auth: couldn't generate token for %s because of %s", user.Login, err)
+		logrus.Errorf("auth: couldn't generate token for %s -> %s", user.Login, err)
 		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	c.SetCookie(
-		"user_session",
-		token,
-		2147483647,
-		"/",
-		c.Request.URL.Host,
-		httputil.IsHTTPS(c.Request),
-		true,
-	)
+	httputil.SetCookie(c.Writer, c.Request, "user_session", token)
 
 	c.Redirect(http.StatusSeeOther, "/")
 	// c.String(http.StatusOK, "hello, your sub is %s and your email is %s", user.Login, user.Email)
+}
+
+// HandleLogout logs out a user
+func HandleLogout(c *gin.Context) {
+	httputil.DelCookie(c.Writer, c.Request, "user_session")
+
+	c.Redirect(http.StatusSeeOther, "/")
 }
