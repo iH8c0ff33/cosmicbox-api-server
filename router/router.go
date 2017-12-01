@@ -65,6 +65,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	{
 		event.GET("/count", controller.GetEventsCount)
 		event.POST("/new", controller.PostEvent)
+		event.GET("/stream", session.OnlyUser(), controller.GetStream)
 	}
 
 	return e

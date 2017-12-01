@@ -1,11 +1,14 @@
 package controller
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
+	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/server/websocket"
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store"
 	"github.com/gin-gonic/gin"
+	ws "github.com/gorilla/websocket"
 )
 
 // GetEventsCount shows the number of events in the db
@@ -31,5 +34,17 @@ func PostEvent(c *gin.Context) {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
+	text, err := json.Marshal(event)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+	websocket.Broadcast(ws.TextMessage, string(text))
 	c.JSON(http.StatusOK, event)
+}
+
+func GetStream(c *gin.Context) {
+	if err := websocket.Upgrade(c.Writer, c.Request); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
 }
