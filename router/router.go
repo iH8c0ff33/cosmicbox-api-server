@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/controller"
+	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 
 	"github.com/gin-gonic/gin"
 )
@@ -47,6 +49,17 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	e.Use(Cors)
 	e.Use(Secure)
 	e.Use(middleware...)
+	e.Use(session.SetUser())
+
+	e.GET("/login", auth.HandleLogin)
+	e.GET("/logout", auth.HandleLogout)
+	e.GET("/auth", auth.HandleAuth)
+
+	user := e.Group("/api/user")
+	{
+		user.Use(session.OnlyUser())
+		user.POST("/token", controller.PostToken)
+	}
 
 	event := e.Group("/api/event")
 	{

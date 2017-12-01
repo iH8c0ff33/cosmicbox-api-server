@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store"

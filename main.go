@@ -3,6 +3,7 @@ package main
 import (
 	"os"
 
+	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/server"
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/version"
 	"github.com/urfave/cli"
 )
@@ -44,8 +45,8 @@ func main() {
 			Aliases:  []string{"serve"},
 			Category: "API",
 			Usage:    "start the API server",
-			Flags:    serverFlags,
-			Action:   server,
+			Flags:    server.ServerFlags,
+			Action:   server.Server,
 		},
 	}
 
