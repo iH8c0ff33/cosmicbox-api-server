@@ -3,6 +3,7 @@ package session
 import (
 	"net/http"
 
+	"github.com/drone/drone/shared/httputil"
 	"github.com/sirupsen/logrus"
 
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
@@ -31,7 +32,7 @@ func OnlyUser() gin.HandlerFunc {
 			c.Next()
 			return
 		}
-		c.String(http.StatusUnauthorized, "User not authorized")
+		c.String(http.StatusUnauthorized, "User not authenticated")
 		c.Abort()
 	}
 }
@@ -40,28 +41,29 @@ func SetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var user *model.User
 
-		claims, err := auth.ParseFromReq(c.Request, func(sub string) (string, error) {
+		_, err := auth.ParseFromReq(c.Request, func(sub string) (string, error) {
 			var err error
 			user, err = store.FromContext(c).GetUserByLogin(sub)
 			return user.Hash, err
 		})
 		if err != nil {
 			logrus.Errorln("session: error -> ", err)
-			c.AbortWithError(http.StatusUnauthorized, err)
+			httputil.DelCookie(c.Writer, c.Request, "user_session")
 			return
 		}
 		if user != nil {
 			c.Set("user", user)
 
-			if claims.TokenType == auth.SessToken {
-				err := auth.ValidateCSRF(c.Request, func(_ string) (string, error) {
-					return user.Hash, nil
-				})
-				if err != nil {
-					c.AbortWithStatus(http.StatusBadRequest)
-					return
-				}
-			}
+			// TODO: Implament CSRF Protection
+			// if claims.TokenType == auth.SessToken {
+			// 	err := auth.ValidateCSRF(c.Request, func(_ string) (string, error) {
+			// 		return user.Hash, nil
+			// 	})
+			// 	if err != nil {
+			// 		c.AbortWithStatus(http.StatusBadRequest)
+			// 		return
+			// 	}
+			// }
 		}
 
 		c.Next()

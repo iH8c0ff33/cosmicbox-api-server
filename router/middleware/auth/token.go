@@ -1,7 +1,6 @@
 package auth
 
 import (
-	"github.com/sirupsen/logrus"
 	"fmt"
 	"net/http"
 
@@ -54,11 +53,7 @@ func ParseFromReq(req *http.Request, fn SecretFunc) (*TokenClaims, error) {
 	// Get token from session cookie
 	if cookie, err := req.Cookie("user_session"); err == nil {
 		return Parse(cookie.Value, fn)
-	} else if err != nil {
-		return nil, err
 	}
-
-	logrus.Debugln("nothing")
 
 	return nil, nil
 }
