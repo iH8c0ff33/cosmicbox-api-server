@@ -58,6 +58,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	user := e.Group("/api/user")
 	{
 		user.Use(session.OnlyUser())
+		user.GET("/info", controller.GetInfo)
 		user.POST("/token", controller.PostToken)
 	}
 
