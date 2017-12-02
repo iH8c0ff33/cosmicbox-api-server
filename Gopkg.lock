@@ -38,6 +38,12 @@
   version = "v3.1.0"
 
 [[projects]]
+  name = "github.com/drone/drone"
+  packages = ["shared/httputil"]
+  revision = "956418cae9bef51fb5855c6a7bd881ceeb4fa801"
+  version = "v0.8.2"
+
+[[projects]]
   name = "github.com/garyburd/redigo"
   packages = ["internal","redis"]
   revision = "47dc60e71eed504e3ef8e77ee3c6fe720f3be57f"
@@ -90,6 +96,12 @@
   packages = ["."]
   revision = "ca9ada44574153444b00d3fd9c8559e4cc95f896"
   version = "v1.1"
+
+[[projects]]
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -208,6 +220,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "dd4343837e3c7e32531dfe43dfd91d5d9d46413de7efafbff0118a2aa7399de0"
+  inputs-digest = "87ca1a3b66a36a2df93e69fb94fef28b3460c6a09a61fa44469f7c6f8cd0ff29"
   solver-name = "gps-cdcl"
   solver-version = 1
