@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/server/websocket"
@@ -47,4 +48,37 @@ func GetStream(c *gin.Context) {
 	if err := websocket.Upgrade(c.Writer, c.Request); err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
+}
+
+type BinsOptions struct {
+	Sample string    `json:"sample" binding:"required"`
+	Start  time.Time `json:"start" binding:"required"`
+	Stop   time.Time `json:"stop" binding:"required"`
+}
+
+func PostBins(c *gin.Context) {
+	options := &BinsOptions{}
+	err := c.Bind(options)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	sample, err := time.ParseDuration(options.Sample)
+	if err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	bins, err := store.FromContext(c).ResampleEvents(
+		sample,
+		options.Start,
+		options.Stop,
+	)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, bins)
 }

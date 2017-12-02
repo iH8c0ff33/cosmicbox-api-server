@@ -15,11 +15,13 @@ import (
 func GetUser(c *gin.Context) *model.User {
 	u, ok := c.Get("user")
 	if !ok {
+		logrus.Debugf("1")
 		return nil
 	}
 
 	user, ok := u.(*model.User)
 	if !ok {
+		logrus.Debugf("2")		
 		return nil
 	}
 

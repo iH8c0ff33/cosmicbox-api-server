@@ -13,7 +13,7 @@ import (
 
 func GetInfo(c *gin.Context) {
 	user := session.GetUser(c)
-	if user != nil {
+	if user == nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("user is nil"))
 		return
 	}

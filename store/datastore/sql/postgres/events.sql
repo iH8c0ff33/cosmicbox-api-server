@@ -21,3 +21,14 @@ ORDER BY event_timestamp ASC;
 
 DELETE FROM events
 WHERE event_id = $1;
+
+-- name: resample-events-timeframe
+
+SELECT
+  COUNT(event_timestamp) AS count,
+  to_timestamp(floor(Extract(EPOCH FROM event_timestamp) / extract(EPOCH FROM $1::INTERVAL)) *
+               extract(EPOCH FROM $1::INTERVAL)) AS intvl
+FROM events
+WHERE event_timestamp > $2 AND event_timestamp < $3
+GROUP BY intvl
+ORDER BY intvl ASC;

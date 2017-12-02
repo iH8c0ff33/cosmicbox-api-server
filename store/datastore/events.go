@@ -43,3 +43,10 @@ func (db *Datastore) GetEventsCount() (count int, err error) {
 	err = db.QueryRow(sql.Lookup(db.driver, "count-events")).Scan(&count)
 	return
 }
+
+func (db *Datastore) ResampleEvents(sample time.Duration, start, end time.Time) ([]*model.Bin, error) {
+	stmt := sql.Lookup(db.driver, "resample-events-timeframe")
+	data := []*model.Bin{}
+	err := meddler.QueryAll(db, &data, stmt, sample.String(), start, end)
+	return data, err
+}
