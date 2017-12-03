@@ -8,6 +8,7 @@ import (
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
 )
 
@@ -67,7 +68,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 		event.GET("/count", controller.GetEventsCount)
 		event.POST("/new", controller.PostEvent)
 		event.GET("/stream", session.OnlyUser(), controller.GetStream)
-		event.POST("/bins", controller.PostBins)
+		event.POST("/bins", gzip.Gzip(gzip.DefaultCompression), controller.PostBins)
 	}
 
 	return e

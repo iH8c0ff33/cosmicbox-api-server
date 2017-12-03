@@ -1,4 +1,4 @@
-version: '3'
+version: '3.1'
 
 services:
   api_server:
@@ -10,6 +10,10 @@ services:
       GIN_MODE: "release"
       DB_DRIVER: "postgres"
       DB_CONFIG: "postgres://cosmic:safe-password@database:5432/cosmic?sslmode=disable"
+      CREDENTIALS_FILE: /run/secrets/oauth-config-prod
+      REDIRECT_URL: "http://eee.lsgalfer.it/auth"
+    secrets:
+      - oauth-config-prod
   database:
     image: postgres:10.0-alpine
     volumes:
@@ -18,6 +22,10 @@ services:
       POSTGRES_PASSWORD: "safe-password"
       POSTGRES_USER: "cosmic"
       POSTGRES_DB: "cosmic"
+
+secrets:
+  oauth-config-prod:
+    external: true
 
 volumes:
   cosmic-data:
