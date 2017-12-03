@@ -23,32 +23,44 @@ func DisableCache(c *gin.Context) {
 	c.Next()
 }
 
-// Cors middleware
-func Cors(c *gin.Context) {
-	origin := c.GetHeader("Origin")
-	logrus.Debugf("origin: %s", origin)
-
+func shouldTrustOrigin(origin string) bool {
 	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
 	if !match {
 		logrus.Debugf("not match")
 		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
 	}
 	if err == nil && match {
-		c.Header("Access-Control-Allow-Origin", origin)
-
-	} else {
-		logrus.Debugf("err: %s, match: %b", err, match)
-		c.Header("Access-Control-Allow-Origin", "http://eee.lsgalfer.it")
+		return true
 	}
-	c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
-	c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
-	c.Header("Content-Type", "application/json")
-	c.AbortWithStatus(http.StatusOK)
+	return false
+}
+
+// Cors middleware
+func Cors(c *gin.Context) {
+	if c.Request.Method != http.MethodOptions {
+		c.Next()
+	} else {
+		origin := c.GetHeader("Origin")
+		if shouldTrustOrigin(origin) {
+			c.Header("Access-Control-Allow-Origin", origin)
+		} else {
+			c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
+		}
+		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
+		c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
+		c.Header("Content-Type", "application/json")
+		c.AbortWithStatus(http.StatusOK)
+	}
 }
 
 // Secure middleware
 func Secure(c *gin.Context) {
-	c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
+	origin := c.GetHeader("Origin")
+	if shouldTrustOrigin(origin) {
+		c.Header("Access-Control-Allow-Origin", origin)
+	} else {
+		c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
+	}
 	c.Header("X-Frame-Options", "DENY")
 	c.Header("X-Content-Type-Options", "nosniff")
 	c.Header("X-XSS-Protection", "1; mode=block")
