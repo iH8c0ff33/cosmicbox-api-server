@@ -2,7 +2,10 @@ package router
 
 import (
 	"net/http"
+	"regexp"
 	"time"
+
+	"github.com/sirupsen/logrus"
 
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/controller"
 	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
@@ -22,15 +25,25 @@ func DisableCache(c *gin.Context) {
 
 // Cors middleware
 func Cors(c *gin.Context) {
-	if c.Request.Method != http.MethodOptions {
-		c.Next()
-	} else {
-		c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
-		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
-		c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
-		c.Header("Content-Type", "application/json")
-		c.AbortWithStatus(http.StatusOK)
+	origin := c.GetHeader("Origin")
+	logrus.Debugf("origin: %s", origin)
+
+	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
+	if !match {
+		logrus.Debugf("not match")
+		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
 	}
+	if err == nil && match {
+		c.Header("Access-Control-Allow-Origin", origin)
+
+	} else {
+		logrus.Debugf("err: %s, match: %b", err, match)
+		c.Header("Access-Control-Allow-Origin", "http://eee.lsgalfer.it")
+	}
+	c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
+	c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
+	c.Header("Content-Type", "application/json")
+	c.AbortWithStatus(http.StatusOK)
 }
 
 // Secure middleware
