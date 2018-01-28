@@ -3,3 +3,4 @@
 vendor
 *.sqlite
 .idea
+debug
