@@ -6,16 +6,16 @@ import (
 
 var (
 	VersionMajor int64
-	VersionMinor int64 = 2
+	VersionMinor int64 = 3
 	VersionPatch int64 = 0
-	VersionPre string
-	VersionDev string
+	VersionPre   string
+	VersionDev   string
 )
 
 var Version = semver.Version{
-	Major: VersionMajor,
-	Minor: VersionMinor,
-	Patch: VersionPatch,
+	Major:      VersionMajor,
+	Minor:      VersionMinor,
+	Patch:      VersionPatch,
 	PreRelease: semver.PreRelease(VersionPre),
-	Metadata: VersionDev,
+	Metadata:   VersionDev,
 }
