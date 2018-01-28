@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/httputil"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/httputil"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )

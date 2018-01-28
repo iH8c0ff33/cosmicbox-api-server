@@ -6,9 +6,9 @@ import (
 
 	"github.com/sirupsen/logrus"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 )
 
 func GetInfo(c *gin.Context) {

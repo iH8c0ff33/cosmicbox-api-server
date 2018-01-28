@@ -5,12 +5,12 @@ import (
 	"net/http"
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware"
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
 )
 
 var ServerFlags = []cli.Flag{

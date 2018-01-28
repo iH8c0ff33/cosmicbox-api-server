@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
-	. "git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
+	. "gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -26,12 +26,12 @@ func populateTestUsers() {
 	for i := 0; i < 5; i++ {
 		a := strconv.Itoa(i)
 		testUsers = append(testUsers, &model.User{
-			Email:  "foobar" + a + "@example.com",
-			Expiry: time.Now().Add(time.Duration(i) * time.Second),
-			Hash:   "foo.bar." + a,
-			Login:  "foo_bar" + a,
-			Secret: "foo.secret.bar." + a,
-			Token:  "some.serious.stuff." + a,
+			Email:   "foobar" + a + "@example.com",
+			Expiry:  time.Now().Add(time.Duration(i) * time.Second),
+			Hash:    "foo.bar." + a,
+			Login:   "foo_bar" + a,
+			Refresh: "foo.Refresh.bar." + a,
+			Token:   "some.serious.stuff." + a,
 		})
 	}
 }
@@ -77,7 +77,7 @@ var _ = Describe("User", func() {
 				Expect(gotUser.Login).To(Equal(user.Login))
 				Expect(gotUser.Token).To(Equal(user.Token))
 				Expect(gotUser.Expiry.Equal(user.Expiry)).To(BeTrue())
-				Expect(gotUser.Secret).To(Equal(user.Secret))
+				Expect(gotUser.Refresh).To(Equal(user.Refresh))
 				Expect(gotUser.Email).To(Equal(user.Email))
 				Expect(gotUser.Hash).To(Equal(user.Hash))
 			}
@@ -91,7 +91,7 @@ var _ = Describe("User", func() {
 				Expect(user.Login).To(Equal(testUsers[index].Login))
 				Expect(user.Token).To(Equal(testUsers[index].Token))
 				Expect(user.Expiry.Equal(testUsers[index].Expiry)).To(BeTrue())
-				Expect(user.Secret).To(Equal(testUsers[index].Secret))
+				Expect(user.Refresh).To(Equal(testUsers[index].Refresh))
 				Expect(user.Email).To(Equal(testUsers[index].Email))
 				Expect(user.Hash).To(Equal(testUsers[index].Hash))
 			}

@@ -7,9 +7,9 @@ import (
 
 	"github.com/russross/meddler"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl"
 	"github.com/sirupsen/logrus"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl"
 )
 
 // Datastore is a database connection

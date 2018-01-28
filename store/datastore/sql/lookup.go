@@ -1,8 +1,8 @@
 package sql
 
 import (
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore/sql/postgres"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore/sql/sqlite"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql/postgres"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql/sqlite"
 )
 
 // Database drivers

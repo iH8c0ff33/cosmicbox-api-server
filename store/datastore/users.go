@@ -1,10 +1,10 @@
 package datastore
 
 import (
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
 	"github.com/russross/meddler"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
 )
 
 func (db *Datastore) CreateUser(user *model.User) error {

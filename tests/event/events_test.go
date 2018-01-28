@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
-	. "git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
+	. "gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"

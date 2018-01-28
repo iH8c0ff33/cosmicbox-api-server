@@ -3,7 +3,7 @@ package store
 import (
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
 	"golang.org/x/net/context"
 )
 

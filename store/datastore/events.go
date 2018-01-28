@@ -3,9 +3,9 @@ package datastore
 import (
 	"time"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
 	"github.com/russross/meddler"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
 )
 
 func (db *Datastore) CreateEvent(event *model.Event) error {

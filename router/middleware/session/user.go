@@ -6,10 +6,10 @@ import (
 	"github.com/drone/drone/shared/httputil"
 	"github.com/sirupsen/logrus"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/model"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/store"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
 )
 
 func GetUser(c *gin.Context) *model.User {
@@ -21,7 +21,7 @@ func GetUser(c *gin.Context) *model.User {
 
 	user, ok := u.(*model.User)
 	if !ok {
-		logrus.Debugf("2")		
+		logrus.Debugf("2")
 		return nil
 	}
 

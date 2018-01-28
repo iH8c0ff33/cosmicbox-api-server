@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/server"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/version"
 	"github.com/urfave/cli"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/server"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/version"
 )
 
 var flags = []cli.Flag{

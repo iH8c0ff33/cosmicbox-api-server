@@ -5,14 +5,11 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/sirupsen/logrus"
-
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/controller"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"git.deutron.ml/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
-
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/controller"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 )
 
 // DisableCache middleware
@@ -26,7 +23,6 @@ func DisableCache(c *gin.Context) {
 func shouldTrustOrigin(origin string) bool {
 	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
 	if !match {
-		logrus.Debugf("not match")
 		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
 	}
 	if err == nil && match {
