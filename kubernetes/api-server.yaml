@@ -1,0 +1,83 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: api-server
+  namespace: cosmicbox
+  labels:
+    app: api-server
+spec:
+  template:
+    metadata:
+      namespace: cosmicbox
+      labels:
+        app: api-server
+    spec:
+      containers:
+        - image: 'danielemonteleone/cosmicbox-api-server:dev'
+          args: ["server"]
+          name: api-server
+          resources:
+            requests:
+              cpu: 20m
+              memory: 50M
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: api
+          env:
+            - name: GIN_MODE
+              value: release
+            - name: DB_DRIVER
+              value: postgres
+            - name: DB_CONFIG
+              value: >-
+                postgres://cosmic:safe-password@events-database:5432/cosmic?sslmode=disable
+            - name: CREDENTIALS_FILE
+              value: /app/oauth-config/production
+            - name: REDIRECT_URL
+              value: 'https://eee.lsgalfer.it/auth'
+          ports:
+            - containerPort: 9000
+              name: api
+          volumeMounts:
+            - mountPath: /app/oauth-config
+              name: oauth-credentials
+      volumes:
+        - name: oauth-credentials
+          secret:
+            secretName: oauth-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: api-server
+  namespace: cosmicbox
+spec:
+  selector:
+    app: api-server
+  ports:
+    - port: 80
+      targetPort: 9000
+      protocol: TCP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: api-server
+  namespace: cosmicbox
+  annotations:
+    kubernetes.io/tls-acme: 'true'
+    kubernetes.io/ingress.class: nginx
+spec:
+  tls:
+    - hosts:
+        - eee.lsgalfer.it
+      secretName: api-server-tls
+  rules:
+    - host: eee.lsgalfer.it
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: api-server
+              servicePort: 80

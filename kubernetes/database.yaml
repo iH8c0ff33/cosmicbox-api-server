@@ -1,0 +1,56 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: events-database
+  namespace: cosmicbox
+  labels:
+    app: events-database
+spec:
+  template:
+    metadata:
+      namespace: cosmicbox
+      labels:
+        app: events-database
+    spec:
+      containers:
+        - image: 'postgres:10.1-alpine'
+          name: events-database
+          resources:
+            requests:
+              cpu: 20m
+              memory: 55M
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            timeoutSeconds: 10
+          env:
+            - name: POSTGRES_PASSWORD
+              value: safe-password
+            - name: POSTGRES_USER
+              value: cosmic
+            - name: POSTGRES_DB
+              value: cosmic
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: data
+      volumes:
+        - name: data
+          hostPath:
+            path: /mnt/data/cosmicbox-events
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: events-database
+  namespace: cosmicbox
+spec:
+  selector:
+    app: events-database
+  ports:
+    - port: 5432
+      protocol: TCP
+      name: postgres
