@@ -76,6 +76,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	e.GET("/login", auth.HandleLogin)
 	e.GET("/logout", auth.HandleLogout)
 	e.GET("/auth", auth.HandleAuth)
+	e.GET("/healthz", controller.GetHealth)
 
 	user := e.Group("/api/user")
 	{
