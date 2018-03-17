@@ -4,3 +4,5 @@ vendor
 *.sqlite
 .idea
 debug
+cosmicbox-api-server
+*.log
