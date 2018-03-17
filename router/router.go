@@ -20,7 +20,7 @@ func DisableCache(c *gin.Context) {
 	c.Next()
 }
 
-func shouldTrustOrigin(origin string) bool {
+func ShouldTrustOrigin(origin string) bool {
 	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
 	if !match {
 		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
@@ -37,11 +37,12 @@ func Cors(c *gin.Context) {
 		c.Next()
 	} else {
 		origin := c.GetHeader("Origin")
-		if shouldTrustOrigin(origin) {
+		if ShouldTrustOrigin(origin) {
 			c.Header("Access-Control-Allow-Origin", origin)
 		} else {
 			c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
 		}
+		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
 		c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
 		c.Header("Content-Type", "application/json")
@@ -52,11 +53,12 @@ func Cors(c *gin.Context) {
 // Secure middleware
 func Secure(c *gin.Context) {
 	origin := c.GetHeader("Origin")
-	if shouldTrustOrigin(origin) {
+	if ShouldTrustOrigin(origin) {
 		c.Header("Access-Control-Allow-Origin", origin)
 	} else {
 		c.Header("Access-Control-Allow-Origin", "eee.lsgalfer.it")
 	}
+	c.Header("Access-Control-Allow-Credentials", "true")
 	c.Header("X-Frame-Options", "DENY")
 	c.Header("X-Content-Type-Options", "nosniff")
 	c.Header("X-XSS-Protection", "1; mode=block")

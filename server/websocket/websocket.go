@@ -2,15 +2,32 @@ package websocket
 
 import (
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
 
-var upgrader = websocket.Upgrader{}
+func checkOrigin(r *http.Request) bool {
+	origin := r.Header.Get("Origin")
+
+	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
+	if !match {
+		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
+	}
+	if err == nil && match {
+		return true
+	}
+	return false
+}
+
+var upgrader = websocket.Upgrader{
+	CheckOrigin: checkOrigin,
+}
 var connections []*websocket.Conn
 
+// Upgrade http connection to websocket connection
 func Upgrade(writer http.ResponseWriter, request *http.Request) error {
 	connection, err := upgrader.Upgrade(writer, request, nil)
 	if err != nil {
@@ -43,6 +60,7 @@ func checkWebSocket(ws *websocket.Conn) <-chan error {
 	return c
 }
 
+// Broadcast a message to all connected clients
 func Broadcast(mtype int, message string) {
 	for _, ws := range connections {
 		logrus.Debugf("sending update to %s", ws.RemoteAddr())
