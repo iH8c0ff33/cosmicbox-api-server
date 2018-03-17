@@ -43,7 +43,7 @@ func SetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var user *model.User
 
-		_, err := auth.ParseFromReq(c.Request, func(sub string) (string, error) {
+		claims, err := auth.ParseFromReq(c.Request, func(sub string) (string, error) {
 			var err error
 			user, err = store.FromContext(c).GetUserByLogin(sub)
 			return user.Hash, err
@@ -56,16 +56,16 @@ func SetUser() gin.HandlerFunc {
 		if user != nil {
 			c.Set("user", user)
 
-			// TODO: Implament CSRF Protection
-			// if claims.TokenType == auth.SessToken {
-			// 	err := auth.ValidateCSRF(c.Request, func(_ string) (string, error) {
-			// 		return user.Hash, nil
-			// 	})
-			// 	if err != nil {
-			// 		c.AbortWithStatus(http.StatusBadRequest)
-			// 		return
-			// 	}
-			// }
+			if claims.TokenType == auth.SessToken {
+				err := auth.ValidateCSRF(c.Request, func(_ string) (string, error) {
+					return user.Hash, nil
+				})
+				if err != nil {
+					logrus.Debug("fuck")
+					c.AbortWithStatus(http.StatusBadRequest)
+					return
+				}
+			}
 		}
 
 		c.Next()
