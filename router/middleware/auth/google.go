@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -99,6 +100,17 @@ func HandleLogin(c *gin.Context) {
 
 	session := sessions.Default(c)
 	session.Set("state", state)
+
+	// Redirect to URL after login with oauth
+	if redirect := c.Query("redirect_uri"); len(redirect) > 0 {
+		session.Set("redirect_uri", redirect)
+	}
+
+	// Append token as query "token" in redirect URL if response_type == token
+	if responseType := c.Query("response_type"); len(responseType) > 0 {
+		session.Set("response_type", responseType)
+	}
+
 	session.Save()
 
 	c.Redirect(http.StatusSeeOther, config.AuthCodeURL(state))
@@ -184,7 +196,7 @@ func HandleAuth(c *gin.Context) {
 		}
 	}
 
-	expiry := time.Now().Add(time.Hour)
+	expiry := time.Now().Add(time.Hour * 24 * 365)
 	claims := &TokenClaims{
 		SessToken,
 		user.Login,
@@ -199,15 +211,43 @@ func HandleAuth(c *gin.Context) {
 		return
 	}
 
-	httputil.SetCookie(c.Writer, c.Request, "user_session", token)
+	// No error should happen!
+	URL, _ := url.Parse("/")
 
-	c.Redirect(http.StatusSeeOther, "/")
-	// c.String(http.StatusOK, "hello, your sub is %s and your email is %s", user.Login, user.Email)
+	if redirect, ok := session.Get("redirect_uri").(string); ok && len(redirect) > 0 {
+		redirectURL, err := url.Parse(redirect)
+		if err != nil {
+			logrus.Errorf("auth: couldn't parse redirect_uri: %s", redirect)
+		} else {
+			URL = redirectURL
+		}
+	}
+
+	if responseType, ok := session.Get("response_type").(string); ok && responseType == "token" {
+		userToken, err := SignClaims(&TokenClaims{
+			TokenType: UserToken,
+			Sub:       user.Login,
+		}, user.Hash)
+		if err != nil {
+			logrus.Errorf("auth: couldn't generate user token for %s -> %s", user.Login, err)
+			c.AbortWithError(http.StatusInternalServerError, err)
+			return
+		}
+
+		queries := URL.Query()
+		queries.Set("response_type", "token")
+		queries.Set("token", userToken)
+		URL.RawQuery = queries.Encode()
+	} else {
+		httputil.SetCookie(c.Writer, c.Request, "user_session", token)
+	}
+
+	c.Redirect(http.StatusFound, URL.String())
 }
 
 // HandleLogout logs out a user
 func HandleLogout(c *gin.Context) {
 	httputil.DelCookie(c.Writer, c.Request, "user_session")
 
-	c.Redirect(http.StatusSeeOther, "/")
+	c.Redirect(http.StatusFound, "/")
 }
