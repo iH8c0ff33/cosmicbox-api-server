@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sirupsen/logrus"
-
 	"github.com/gin-gonic/gin"
 	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
 	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
@@ -33,6 +31,5 @@ func PostToken(c *gin.Context) {
 		return
 	}
 
-	logrus.Debugln("token: ", token)
 	c.String(http.StatusOK, token)
 }

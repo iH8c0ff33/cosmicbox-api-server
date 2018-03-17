@@ -24,13 +24,13 @@ func IsHTTPS(r *http.Request) bool {
 // SetCookie sets a cookie to the client
 func SetCookie(w http.ResponseWriter, r *http.Request, name, value string) {
 	cookie := http.Cookie{
-		Name: name,
-		Value: value,
-		Path: "/",
-		Domain: r.URL.Host,
+		Name:     name,
+		Value:    value,
+		Path:     "/",
+		Domain:   r.URL.Host,
 		HttpOnly: true,
-		Secure: IsHTTPS(r),
-		MaxAge: 2147483647,
+		Secure:   IsHTTPS(r),
+		MaxAge:   2147483647,
 	}
 
 	http.SetCookie(w, &cookie)
@@ -39,9 +39,9 @@ func SetCookie(w http.ResponseWriter, r *http.Request, name, value string) {
 // DelCookie deletes a cookie
 func DelCookie(w http.ResponseWriter, r *http.Request, name string) {
 	cookie := http.Cookie{
-		Name: name,
-		Value: "DELETED",
-		Path: "/",
+		Name:   name,
+		Value:  "DELETED",
+		Path:   "/",
 		Domain: r.URL.Host,
 		MaxAge: -1,
 	}
