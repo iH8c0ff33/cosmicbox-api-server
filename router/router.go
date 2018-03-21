@@ -89,9 +89,10 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 
 	event := e.Group("/api/event")
 	{
-		event.GET("/count", controller.GetEventsCount)
+		event.GET("/count", session.OnlyUser(), controller.GetEventsCount)
 		event.POST("/new", controller.PostEvent)
 		event.GET("/stream", session.OnlyUser(), controller.GetStream)
+		event.GET("/range", session.OnlyUser(), gzip.Gzip(gzip.DefaultCompression), controller.GetRange)
 		event.POST("/bins", gzip.Gzip(gzip.DefaultCompression), controller.PostBins)
 	}
 

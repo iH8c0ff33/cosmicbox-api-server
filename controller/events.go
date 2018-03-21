@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -81,4 +82,35 @@ func PostBins(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, bins)
+}
+
+type Range struct {
+	Start  time.Time `json:"start" form:"start" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	End    time.Time `json:"end" form:"end" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	Format string    `json:"format" form:"format" binding:"required"`
+}
+
+func GetRange(c *gin.Context) {
+	ran := &Range{}
+	if err := c.Bind(ran); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	events, err := store.FromContext(c).GetEventsInRange(ran.Start, ran.End)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if ran.Format == "application/json" {
+		c.Header("Content-Disposition", "attachment; filename=events.json")
+		c.JSON(http.StatusOK, events)
+		return
+	}
+
+	c.Status(http.StatusOK)
+	for _, event := range events {
+		c.Writer.Write([]byte(event.Timestamp.String() + "," + strconv.FormatFloat(float64(event.Pressure), 'f', 3, 32) + "\n"))
+	}
 }
