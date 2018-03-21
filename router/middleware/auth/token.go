@@ -46,10 +46,6 @@ func ParseFromReq(req *http.Request, fn SecretFunc) (*TokenClaims, error) {
 		fmt.Sscanf(token, "Bearer %s", &token)
 		return Parse(token, fn)
 	}
-	// Get token from WebSocket Protocol header
-	if token := req.Header.Get("Sec-WebSocket-Protocol"); len(token) != 0 {
-		return Parse(token, fn)
-	}
 	// Get token from access_token query param
 	if token := req.FormValue("access_token"); len(token) != 0 {
 		return Parse(token, fn)
