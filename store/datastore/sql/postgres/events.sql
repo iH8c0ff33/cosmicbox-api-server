@@ -2,7 +2,8 @@
 
 SELECT
   event_id,
-  event_timestamp
+  event_timestamp,
+  event_pressure
 FROM events
 WHERE event_timestamp = $1
 ORDER BY event_timestamp ASC;
@@ -11,7 +12,8 @@ ORDER BY event_timestamp ASC;
 
 SELECT
   event_id,
-  event_timestamp
+  event_timestamp,
+  event_pressure
 FROM events
 WHERE event_timestamp >= $1
       AND event_timestamp < $2
