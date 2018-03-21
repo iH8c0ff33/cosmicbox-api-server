@@ -215,6 +215,8 @@ func HandleAuth(c *gin.Context) {
 	URL, _ := url.Parse("/")
 
 	if redirect, ok := session.Get("redirect_uri").(string); ok && len(redirect) > 0 {
+		session.Delete("redirect_uri")
+
 		redirectURL, err := url.Parse(redirect)
 		if err != nil {
 			logrus.Errorf("auth: couldn't parse redirect_uri: %s", redirect)
