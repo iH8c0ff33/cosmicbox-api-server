@@ -13,6 +13,6 @@ type Event struct {
 
 // Bin is a group of events
 type Bin struct {
-	Start time.Time `json:"start" meddler:"intvl,localtime"`
-	Count int64     `json:"count" meddler:"count"`
+	Start time.Time `json:"start" meddler:"start_time,localtime"`
+	Count int64     `json:"count" meddler:"event_count"`
 }

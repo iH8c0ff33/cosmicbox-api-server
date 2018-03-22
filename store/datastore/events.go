@@ -47,6 +47,34 @@ func (db *Datastore) GetEventsCount() (count int, err error) {
 func (db *Datastore) ResampleEvents(sample time.Duration, start, end time.Time) ([]*model.Bin, error) {
 	stmt := sql.Lookup(db.driver, "resample-events-timeframe")
 	data := []*model.Bin{}
+
+	// Fix sqlite3 shit
+	if db.driver == "sqlite3" {
+		type NF struct {
+			Start string `json:"start" meddler:"start_time"`
+			Count int64  `json:"count" meddler:"event_count"`
+		}
+
+		tmp := []*NF{}
+		err := meddler.QueryAll(db, &tmp, stmt, sample.String(), start, end)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, v := range tmp {
+			t, err := time.Parse("2006-01-02 15:04:05.999999999-07:00", v.Start)
+			if err != nil {
+				return nil, err
+			}
+
+			data = append(data, &model.Bin{
+				Start: t,
+				Count: v.Count,
+			})
+		}
+		return data, nil
+	}
+
 	err := meddler.QueryAll(db, &data, stmt, sample.String(), start, end)
 	return data, err
 }

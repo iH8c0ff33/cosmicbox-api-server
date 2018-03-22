@@ -27,12 +27,18 @@ WHERE event_id = ?;
 -- name: resample-events-timeframe
 
 SELECT
-  COUNT(event_timestamp)                                                                                  AS count,
-  datetime(cast(strftime('%s', event_timestamp) /
-                strftime('%s', datetime(datetime(0, 'unixepoch'), replace(?1, 's', ' seconds'))) as int) *
-           strftime('%s', datetime(datetime(0, 'unixepoch'), replace(?1, 's', ' seconds'))), 'unixepoch') AS intvl
+  strftime(
+    '%Y-%m-%d %H:%M:%f000000+00:00',
+    datetime(
+      cast(strftime('%s', event_timestamp) /
+      strftime('%s', datetime(datetime(0, 'unixepoch'), replace(?1, 's', ' seconds'))) as int) *
+      strftime('%s', datetime(datetime(0, 'unixepoch'), replace(?1, 's', ' seconds'))),
+      'unixepoch'
+    )
+  )                       AS start_time,
+  COUNT(event_timestamp)  AS event_count
 FROM events
 WHERE event_timestamp > ?2 AND event_timestamp < ?3
-GROUP BY intvl
-ORDER BY intvl
+GROUP BY start_time
+ORDER BY start_time
   ASC;
