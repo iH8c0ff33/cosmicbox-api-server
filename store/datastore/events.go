@@ -51,8 +51,9 @@ func (db *Datastore) ResampleEvents(sample time.Duration, start, end time.Time) 
 	// Fix sqlite3 shit
 	if db.driver == "sqlite3" {
 		type NF struct {
-			Start string `json:"start" meddler:"start_time"`
-			Count int64  `json:"count" meddler:"event_count"`
+			Start string  `json:"start" meddler:"start_time"`
+			Count int64   `json:"count" meddler:"event_count"`
+			Press float64 `json:"press" meddler:"avg_press"`
 		}
 
 		tmp := []*NF{}
@@ -70,6 +71,7 @@ func (db *Datastore) ResampleEvents(sample time.Duration, start, end time.Time) 
 			data = append(data, &model.Bin{
 				Start: t,
 				Count: v.Count,
+				Press: v.Press,
 			})
 		}
 		return data, nil

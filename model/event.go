@@ -15,4 +15,5 @@ type Event struct {
 type Bin struct {
 	Start time.Time `json:"start" meddler:"start_time,localtime"`
 	Count int64     `json:"count" meddler:"event_count"`
+	Press float64   `json:"press" meddler:"avg_press"`
 }

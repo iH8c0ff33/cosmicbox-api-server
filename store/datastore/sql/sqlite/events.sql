@@ -2,7 +2,8 @@
 
 SELECT
   event_id,
-  event_timestamp
+  event_timestamp,
+  event_pressure
 FROM events
 WHERE event_timestamp = ?
 ORDER BY event_timestamp
@@ -12,7 +13,8 @@ ORDER BY event_timestamp
 
 SELECT
   event_id,
-  event_timestamp
+  event_timestamp,
+  event_pressure
 FROM events
 WHERE event_timestamp >= ?
       AND event_timestamp < ?
@@ -36,7 +38,8 @@ SELECT
       'unixepoch'
     )
   )                       AS start_time,
-  COUNT(event_timestamp)  AS event_count
+  COUNT(event_timestamp)  AS event_count,
+  AVG(event_pressure)     AS avg_press
 FROM events
 WHERE event_timestamp > ?2 AND event_timestamp < ?3
 GROUP BY start_time

@@ -27,10 +27,16 @@ WHERE event_id = $1;
 -- name: resample-events-timeframe
 
 SELECT
-  COUNT(event_timestamp) AS count,
-  to_timestamp(floor(Extract(EPOCH FROM event_timestamp) / extract(EPOCH FROM $1::INTERVAL)) *
-               extract(EPOCH FROM $1::INTERVAL)) AS intvl
+  to_timestamp(
+    floor(
+      extract(EPOCH FROM event_timestamp) /
+      extract(EPOCH FROM $1::INTERVAL)
+    ) *
+    extract(EPOCH FROM $1::INTERVAL)
+  )                       AS start_time,
+  COUNT(event_timestamp)  AS count,
+  AVG(event_pressure)     AS avg_press  
 FROM events
 WHERE event_timestamp > $2 AND event_timestamp < $3
-GROUP BY intvl
-ORDER BY intvl ASC;
+GROUP BY start_time
+ORDER BY start_time ASC;
