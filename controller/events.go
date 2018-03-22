@@ -2,6 +2,7 @@ package controller
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -104,13 +105,34 @@ func GetRange(c *gin.Context) {
 	}
 
 	if ran.Format == "application/json" {
-		c.Header("Content-Disposition", "attachment; filename=events.json")
+		c.Header(
+			"Content-Disposition",
+			fmt.Sprintf(
+				"attachment; filename=events_%s_%s.json",
+				ran.Start.Format(time.RFC3339),
+				ran.End.Format(time.RFC3339),
+			),
+		)
 		c.JSON(http.StatusOK, events)
 		return
 	}
 
 	c.Status(http.StatusOK)
+	c.Header(
+		"Content-Disposition",
+		fmt.Sprintf(
+			"attachment; filename=events_%s_%s.csv",
+			ran.Start.Format(time.RFC3339),
+			ran.End.Format(time.RFC3339),
+		),
+	)
 	for _, event := range events {
-		c.Writer.Write([]byte(event.Timestamp.String() + "," + strconv.FormatFloat(float64(event.Pressure), 'f', 3, 32) + "\n"))
+		c.Writer.Write([]byte(
+			event.Timestamp.String() +
+				"," +
+				strconv.FormatFloat(float64(event.Pressure), 'f', 3, 32) +
+				"\n",
+		))
 	}
+	c.String(http.StatusOK, "")
 }
