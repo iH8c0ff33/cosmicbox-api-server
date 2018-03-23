@@ -40,3 +40,11 @@ FROM events
 WHERE event_timestamp > $2 AND event_timestamp < $3
 GROUP BY start_time
 ORDER BY start_time ASC;
+
+-- name: event-range-avg
+
+SELECT
+  AVG(event_pressure)
+FROM events
+WHERE event_timestamp >= $1
+  AND event_timestamp < $2;

@@ -94,6 +94,7 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 		event.GET("/stream", session.OnlyUser(), controller.GetStream)
 		event.GET("/range", session.OnlyUser(), gzip.Gzip(gzip.DefaultCompression), controller.GetRange)
 		event.POST("/bins", gzip.Gzip(gzip.DefaultCompression), controller.PostBins)
+		event.GET("/press", session.OnlyUser(), controller.GetPressureAvg)
 	}
 
 	return e

@@ -80,3 +80,8 @@ func (db *Datastore) ResampleEvents(sample time.Duration, start, end time.Time) 
 	err := meddler.QueryAll(db, &data, stmt, sample.String(), start, end)
 	return data, err
 }
+
+func (db *Datastore) GetPressureAvg(start, end time.Time) (avg float64, err error) {
+	err = db.QueryRow(sql.Lookup(db.driver, "event-range-avg"), start, end).Scan(&avg)
+	return
+}

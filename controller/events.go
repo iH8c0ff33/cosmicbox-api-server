@@ -86,13 +86,17 @@ func PostBins(c *gin.Context) {
 }
 
 type Range struct {
-	Start  time.Time `json:"start" form:"start" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
-	End    time.Time `json:"end" form:"end" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
-	Format string    `json:"format" form:"format" binding:"required"`
+	Start time.Time `json:"start" form:"start" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	End   time.Time `json:"end" form:"end" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+}
+
+type RangeFormat struct {
+	Range
+	Format string `json:"format" form:"format" binding:"required"`
 }
 
 func GetRange(c *gin.Context) {
-	ran := &Range{}
+	ran := &RangeFormat{}
 	if err := c.Bind(ran); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
@@ -135,4 +139,19 @@ func GetRange(c *gin.Context) {
 		))
 	}
 	c.String(http.StatusOK, "")
+}
+
+func GetPressureAvg(c *gin.Context) {
+	ran := &Range{}
+	if err := c.Bind(ran); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+	}
+
+	avg, err := store.FromContext(c).GetPressureAvg(ran.Start, ran.End)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.JSON(http.StatusOK, avg)
 }
