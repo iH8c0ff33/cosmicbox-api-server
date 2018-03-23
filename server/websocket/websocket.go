@@ -3,11 +3,40 @@ package websocket
 import (
 	"net/http"
 	"regexp"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 )
+
+type client struct {
+	ws *websocket.Conn
+	mu sync.Mutex
+}
+
+func (cli *client) send(mtype int, message string) <-chan bool {
+	c := make(chan bool)
+
+	cli.mu.Lock()
+
+	go func(cli *client, c chan<- bool) {
+		err := <-checkWebSocket(cli.ws)
+		if err != nil {
+			logrus.Debugf("err -> %s", err)
+			c <- false
+			return
+		}
+		c <- true
+
+		// <-time.After(time.Second * 3)
+		cli.ws.WriteMessage(mtype, []byte(message))
+
+		cli.mu.Unlock()
+	}(cli, c)
+
+	return c
+}
 
 func checkOrigin(r *http.Request) bool {
 	origin := r.Header.Get("Origin")
@@ -25,7 +54,7 @@ func checkOrigin(r *http.Request) bool {
 var upgrader = websocket.Upgrader{
 	CheckOrigin: checkOrigin,
 }
-var connections []*websocket.Conn
+var connections []*client
 
 // Upgrade http connection to websocket connection
 func Upgrade(writer http.ResponseWriter, request *http.Request) error {
@@ -34,7 +63,12 @@ func Upgrade(writer http.ResponseWriter, request *http.Request) error {
 		return err
 	}
 
-	connections = append(connections, connection)
+	cli := &client{
+		ws: connection,
+		mu: sync.Mutex{},
+	}
+
+	connections = append(connections, cli)
 	connection.SetCloseHandler(func(code int, text string) error {
 		logrus.Debugf("disconnected %s", text)
 		return nil
@@ -43,7 +77,7 @@ func Upgrade(writer http.ResponseWriter, request *http.Request) error {
 	return nil
 }
 
-func removeClient(ws *websocket.Conn) {
+func removeClient(ws *client) {
 	for i, a := range connections {
 		if a == ws {
 			connections[i] = connections[len(connections)-1]
@@ -62,17 +96,14 @@ func checkWebSocket(ws *websocket.Conn) <-chan error {
 
 // Broadcast a message to all connected clients
 func Broadcast(mtype int, message string) {
-	for _, ws := range connections {
-		logrus.Debugf("sending update to %s", ws.RemoteAddr())
+	for _, cli := range connections {
+		logrus.Debugf("sending update to %s", cli.ws.RemoteAddr())
 
-		go func(ws *websocket.Conn) {
-			err := <-checkWebSocket(ws)
-			if err != nil {
-				removeClient(ws)
-				logrus.Debugf("err -> %s", err)
+		go func(cli *client) {
+			success := cli.send(mtype, message)
+			if !<-success {
+				removeClient(cli)
 			}
-			<-time.After(time.Second * 3)
-			ws.WriteMessage(mtype, []byte(message))
-		}(ws)
+		}(cli)
 	}
 }
