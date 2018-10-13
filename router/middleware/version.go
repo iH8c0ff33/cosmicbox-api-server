@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/version"
+	"github.com/iH8c0ff33/cosmicbox-api-server/version"
 )
 
 // Version middleware adds cosmic server version header

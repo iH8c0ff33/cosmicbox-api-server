@@ -3,8 +3,8 @@ package ddl
 import (
 	"database/sql"
 
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl/postgres"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl/sqlite"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl/postgres"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl/sqlite"
 )
 
 // Database drivers

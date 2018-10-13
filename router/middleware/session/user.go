@@ -7,9 +7,9 @@ import (
 	"github.com/sirupsen/logrus"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
+	"github.com/iH8c0ff33/cosmicbox-api-server/model"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store"
 )
 
 func GetUser(c *gin.Context) *model.User {
@@ -34,6 +34,7 @@ func OnlyUser() gin.HandlerFunc {
 			c.Next()
 			return
 		}
+		logrus.Debug("aaa")
 		c.String(http.StatusUnauthorized, "User not authenticated")
 		c.Abort()
 	}

@@ -7,9 +7,9 @@ import (
 
 	"github.com/gin-contrib/gzip"
 	"github.com/gin-gonic/gin"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/controller"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
+	"github.com/iH8c0ff33/cosmicbox-api-server/controller"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 )
 
 // DisableCache middleware

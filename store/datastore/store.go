@@ -8,8 +8,8 @@ import (
 	"github.com/russross/meddler"
 
 	"github.com/sirupsen/logrus"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl"
 )
 
 // Datastore is a database connection

@@ -8,9 +8,9 @@ import (
 	"github.com/gin-gonic/contrib/ginrus"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
 )
 
 var ServerFlags = []cli.Flag{

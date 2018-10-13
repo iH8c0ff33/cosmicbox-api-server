@@ -9,9 +9,9 @@ import (
 
 	"github.com/gin-gonic/gin"
 	ws "github.com/gorilla/websocket"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/server/websocket"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/store"
+	"github.com/iH8c0ff33/cosmicbox-api-server/model"
+	"github.com/iH8c0ff33/cosmicbox-api-server/server/websocket"
+	"github.com/iH8c0ff33/cosmicbox-api-server/store"
 )
 
 // GetEventsCount shows the number of events in the db

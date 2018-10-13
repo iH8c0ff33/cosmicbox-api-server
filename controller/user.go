@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/auth"
+	"github.com/iH8c0ff33/cosmicbox-api-server/router/middleware/session"
 )
 
 func GetInfo(c *gin.Context) {

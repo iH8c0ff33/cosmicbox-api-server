@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"gitlab.com/iH8c0ff33/cosmicbox-api-server/model"
-	. "gitlab.com/iH8c0ff33/cosmicbox-api-server/store/datastore"
+	"github.com/iH8c0ff33/cosmicbox-api-server/model"
+	. "github.com/iH8c0ff33/cosmicbox-api-server/store/datastore"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
