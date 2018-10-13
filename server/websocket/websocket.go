@@ -41,7 +41,10 @@ func (cli *client) send(mtype int, message string) <-chan bool {
 func checkOrigin(r *http.Request) bool {
 	origin := r.Header.Get("Origin")
 
-	match, err := regexp.MatchString("https?://localhost:\\d+", origin)
+	match, err := regexp.MatchString("https://eee.lsgalfer.it", origin)
+	if !match {
+		match, err = regexp.MatchString("https?://localhost:\\d+", origin)
+	}
 	if !match {
 		match, err = regexp.MatchString("https?://192\\.168\\.1\\.\\d{1,3}:\\d+", origin)
 	}
