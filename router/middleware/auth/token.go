@@ -26,8 +26,10 @@ type TokenClaims struct {
 
 // Parse a token string given a SecretFunc
 func Parse(tokenString string, fn SecretFunc) (*TokenClaims, error) {
+	fmt.Printf("Parse %s", tokenString)
 	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, buildKeyFunc(fn))
 	if err != nil {
+		fmt.Printf("pene")
 		return nil, err
 	} else if !token.Valid {
 		return nil, fmt.Errorf("token is not valid")
@@ -65,14 +67,16 @@ func ValidateCSRF(req *http.Request, fn SecretFunc) error {
 		return nil
 	}
 
-	token := req.Header.Get("X-CSRF-TOKEN")
-	claims, err := Parse(token, fn)
+	claims, err := Parse(req.Header.Get("X-CSRF-TOKEN"), fn)
+	if err != nil {
+		return err
+	}
 
 	if claims.TokenType != CsrfToken {
 		return fmt.Errorf("token is not a CSRF token")
 	}
 
-	return err
+	return nil
 }
 
 // SignClaims signs claims and returns a token string

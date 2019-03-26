@@ -5,3 +5,5 @@ vendor
 *.sqlite
 .idea
 debug
+cosmicbox-api-server
+oauth_secret_dev.json

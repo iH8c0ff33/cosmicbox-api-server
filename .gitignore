@@ -6,3 +6,4 @@ vendor
 debug
 cosmicbox-api-server
 *.log
+oauth_secret_dev.json

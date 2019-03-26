@@ -141,6 +141,21 @@ func GetRange(c *gin.Context) {
 	c.String(http.StatusOK, "")
 }
 
+func DeleteRange(c *gin.Context) {
+	bounds := &RangeFormat{}
+	if err := c.Bind(bounds); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := store.FromContext(c).DeleteEventsInRange(bounds.Start, bounds.End); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.String(http.StatusOK, "deleted")
+}
+
 func GetPressureAvg(c *gin.Context) {
 	ran := &Range{}
 	if err := c.Bind(ran); err != nil {
