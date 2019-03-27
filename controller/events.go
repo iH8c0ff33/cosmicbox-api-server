@@ -86,8 +86,8 @@ func PostBins(c *gin.Context) {
 }
 
 type Range struct {
-	Start time.Time `json:"start" form:"start" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
-	End   time.Time `json:"end" form:"end" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	Start time.Time `json:"start" form:"start" binding:"required"`
+	End   time.Time `json:"end" form:"end" binding:"required"`
 }
 
 type RangeFormat struct {

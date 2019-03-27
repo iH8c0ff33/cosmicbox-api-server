@@ -26,10 +26,8 @@ type TokenClaims struct {
 
 // Parse a token string given a SecretFunc
 func Parse(tokenString string, fn SecretFunc) (*TokenClaims, error) {
-	fmt.Printf("Parse %s", tokenString)
 	token, err := jwt.ParseWithClaims(tokenString, &TokenClaims{}, buildKeyFunc(fn))
 	if err != nil {
-		fmt.Printf("pene")
 		return nil, err
 	} else if !token.Valid {
 		return nil, fmt.Errorf("token is not valid")
