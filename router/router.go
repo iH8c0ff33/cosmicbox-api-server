@@ -84,7 +84,8 @@ func Load(middleware ...gin.HandlerFunc) http.Handler {
 	{
 		user.Use(session.OnlyUser())
 		user.GET("/info", controller.GetInfo)
-		user.POST("/token", controller.PostToken)
+		user.GET("/token", controller.GetUserToken)
+		user.GET("/token/csrf", session.OnlyUser(), controller.GetCsrfToken)
 	}
 
 	event := e.Group("/api/event")

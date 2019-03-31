@@ -20,7 +20,6 @@ const (
 // TokenClaims are the claims inside a token
 type TokenClaims struct {
 	TokenType string `json:"ttype"`
-	Sub       string `json:"sub"`
 	jwt.StandardClaims
 }
 
@@ -95,7 +94,7 @@ func buildKeyFunc(getSecret SecretFunc) jwt.Keyfunc {
 		}
 
 		// Get the secret using the provided function and return the evental error
-		secret, err := getSecret(claims.Sub)
+		secret, err := getSecret(claims.Subject)
 		return []byte(secret), err
 	}
 }

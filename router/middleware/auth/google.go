@@ -14,10 +14,10 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 	"github.com/iH8c0ff33/cosmicbox-api-server/httputil"
 	"github.com/iH8c0ff33/cosmicbox-api-server/model"
 	"github.com/iH8c0ff33/cosmicbox-api-server/store"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 )
@@ -199,8 +199,8 @@ func HandleAuth(c *gin.Context) {
 	expiry := time.Now().Add(time.Hour * 24 * 365)
 	claims := &TokenClaims{
 		SessToken,
-		user.Login,
 		jwt.StandardClaims{
+			Subject:   user.Login,
 			ExpiresAt: expiry.Unix(),
 		},
 	}
@@ -227,8 +227,10 @@ func HandleAuth(c *gin.Context) {
 
 	if responseType, ok := session.Get("response_type").(string); ok && responseType == "token" {
 		userToken, err := SignClaims(&TokenClaims{
-			TokenType: UserToken,
-			Sub:       user.Login,
+			UserToken,
+			jwt.StandardClaims{
+				Subject: user.Login,
+			},
 		}, user.Hash)
 		if err != nil {
 			logrus.Errorf("auth: couldn't generate user token for %s -> %s", user.Login, err)
