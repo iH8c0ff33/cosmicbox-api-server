@@ -7,9 +7,9 @@ import (
 
 	"github.com/russross/meddler"
 
-	"github.com/sirupsen/logrus"
 	"github.com/iH8c0ff33/cosmicbox-api-server/store"
 	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/ddl"
+	"github.com/sirupsen/logrus"
 )
 
 // Datastore is a database connection
@@ -93,6 +93,7 @@ func NewTestDb() *Datastore {
 
 // runMigrations runs migrations given a driver and a db connection
 func runMigrations(driver string, db *sql.DB) error {
+	logrus.Debug("running DB migration")
 	return ddl.Migrate(driver, db)
 }
 
