@@ -62,8 +62,7 @@ func SetUser() gin.HandlerFunc {
 					return user.Hash, nil
 				})
 				if err != nil {
-					logrus.Debug("fuck")
-					c.AbortWithStatus(http.StatusBadRequest)
+					c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"type": "CSRF"})
 					return
 				}
 			}
