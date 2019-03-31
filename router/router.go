@@ -44,7 +44,7 @@ func Cors(c *gin.Context) {
 		}
 		c.Header("Access-Control-Allow-Credentials", "true")
 		c.Header("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS")
-		c.Header("Access-COntrol-Allow-Headers", "authorization, origin, content-type, accept")
+		c.Header("Access-Control-Allow-Headers", "authorization, origin, content-type, accept, x-csrf-token")
 		c.Header("Content-Type", "application/json")
 		c.AbortWithStatus(http.StatusOK)
 	}
