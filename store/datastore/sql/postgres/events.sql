@@ -24,6 +24,11 @@ ORDER BY event_timestamp ASC;
 DELETE FROM events
 WHERE event_id = $1;
 
+-- name: event-delete-range
+DELETE FROM events
+WHERE event_timestamp >= $1
+      AND event_timestamp < $2;
+
 -- name: resample-events-timeframe
 
 SELECT

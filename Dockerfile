@@ -1,17 +1,18 @@
-FROM golang:alpine as builder
+FROM golang:1.12-alpine as builder
 
 RUN apk update && apk add git && apk add ca-certificates
 
 RUN go get -u -v github.com/bradrydzewski/togo && \
     go get -u -v github.com/golang/dep/cmd/dep
 
-COPY . $GOPATH/src/github.com/iH8c0ff33/cosmicbox-api-server
-WORKDIR $GOPATH/src/github.com/iH8c0ff33/cosmicbox-api-server
+WORKDIR /src/cosmicbox-api-server
+COPY go.* /src/cosmicbox-apiserver/
+RUN go mod download
 
-RUN dep ensure -v
+COPY . /src/cosmicbox-api-server
 
-ADD . /go/src/github.com/iH8c0ff33/cosmicbox-api-server/
-RUN go generate -v github.com/iH8c0ff33/cosmicbox-api-server/... && \
+ADD . /src/cosmicbox-api-server/
+RUN go generate -v cosmicbox-api-server/... && \
     CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -v -a -installsuffix cgo \
     -ldflags="-w -s" -o /go/bin/cosmicbox-api
 

@@ -15,7 +15,7 @@
       "program": "${workspaceRoot}/main.go",
       "env": {
         "COSMIC_DEBUG": "1",
-        "CREDENTIALS_FILE": "/home/daniele/creds/oauth_credentials.json"
+        "CREDENTIALS_FILE": "${workspaceRoot}/oauth_secret_dev.json"
       },
       "args": ["server"],
       "showLog": true

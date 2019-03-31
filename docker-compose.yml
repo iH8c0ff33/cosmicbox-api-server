@@ -1,19 +1,21 @@
-version: '3.1'
+version: "3.1"
 
 services:
   api_server:
     image: cosmicbox-api
+    build: ./
     command: server
     ports:
-      - "80:9000"
+      - "9000:9000"
     environment:
       GIN_MODE: "release"
       DB_DRIVER: "postgres"
       DB_CONFIG: "postgres://cosmic:safe-password@database:5432/cosmic?sslmode=disable"
-      CREDENTIALS_FILE: /run/secrets/oauth-config-prod
-      REDIRECT_URL: "http://eee.lsgalfer.it/auth"
+      COSMIC_DEBUG: "1"
+      CREDENTIALS_FILE: /run/secrets/oauth-config-dev
+      # REDIRECT_URL: "http:/localhost:9000/auth"
     secrets:
-      - oauth-config-prod
+      - oauth-config-dev
   database:
     image: postgres:10.0-alpine
     volumes:
@@ -26,8 +28,8 @@ services:
       POSTGRES_DB: "cosmic"
 
 secrets:
-  oauth-config-prod:
-    external: true
+  oauth-config-dev:
+    file: oauth_secret_dev.json
 
 volumes:
   cosmic-data:

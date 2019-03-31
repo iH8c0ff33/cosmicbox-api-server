@@ -86,8 +86,8 @@ func PostBins(c *gin.Context) {
 }
 
 type Range struct {
-	Start time.Time `json:"start" form:"start" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
-	End   time.Time `json:"end" form:"end" binding:"required" time_format:"2006-01-02T15:04:05Z07:00"`
+	Start time.Time `json:"start" form:"start" binding:"required"`
+	End   time.Time `json:"end" form:"end" binding:"required"`
 }
 
 type RangeFormat struct {
@@ -139,6 +139,21 @@ func GetRange(c *gin.Context) {
 		))
 	}
 	c.String(http.StatusOK, "")
+}
+
+func DeleteRange(c *gin.Context) {
+	bounds := &RangeFormat{}
+	if err := c.Bind(bounds); err != nil {
+		c.String(http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := store.FromContext(c).DeleteEventsInRange(bounds.Start, bounds.End); err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	c.String(http.StatusOK, "deleted")
 }
 
 func GetPressureAvg(c *gin.Context) {
