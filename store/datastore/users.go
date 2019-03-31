@@ -1,8 +1,8 @@
 package datastore
 
 import (
-	"github.com/russross/meddler"
 	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
+	"github.com/russross/meddler"
 
 	"github.com/iH8c0ff33/cosmicbox-api-server/model"
 )

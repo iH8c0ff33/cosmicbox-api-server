@@ -3,9 +3,9 @@ package datastore
 import (
 	"time"
 
-	"github.com/russross/meddler"
 	"github.com/iH8c0ff33/cosmicbox-api-server/model"
 	"github.com/iH8c0ff33/cosmicbox-api-server/store/datastore/sql"
+	"github.com/russross/meddler"
 )
 
 func (db *Datastore) CreateEvent(event *model.Event) error {
@@ -36,6 +36,12 @@ func (db *Datastore) GetEventsInRange(start, end time.Time) ([]*model.Event, err
 func (db *Datastore) DeleteEvent(event *model.Event) error {
 	stmt := sql.Lookup(db.driver, "event-delete")
 	_, err := db.Exec(stmt, event.ID)
+	return err
+}
+
+func (db *Datastore) DeleteEventsInRange(start, end time.Time) error {
+	stmt := sql.Lookup(db.driver, "event-delete-range")
+	_, err := db.Exec(stmt, start, end)
 	return err
 }
 

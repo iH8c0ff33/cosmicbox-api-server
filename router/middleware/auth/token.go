@@ -65,14 +65,16 @@ func ValidateCSRF(req *http.Request, fn SecretFunc) error {
 		return nil
 	}
 
-	token := req.Header.Get("X-CSRF-TOKEN")
-	claims, err := Parse(token, fn)
+	claims, err := Parse(req.Header.Get("X-CSRF-TOKEN"), fn)
+	if err != nil {
+		return err
+	}
 
 	if claims.TokenType != CsrfToken {
 		return fmt.Errorf("token is not a CSRF token")
 	}
 
-	return err
+	return nil
 }
 
 // SignClaims signs claims and returns a token string

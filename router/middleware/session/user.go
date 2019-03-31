@@ -58,8 +58,9 @@ func SetUser() gin.HandlerFunc {
 			c.Set("user", user)
 
 			if claims.TokenType == auth.SessToken {
-				err := auth.ValidateCSRF(c.Request, func(_ string) (string, error) {
-					return user.Hash, nil
+				err := auth.ValidateCSRF(c.Request, func(sub string) (string, error) {
+					user, err := store.FromContext(c).GetUserByLogin(sub)
+					return user.Hash, err
 				})
 				if err != nil {
 					logrus.Debug("fuck")

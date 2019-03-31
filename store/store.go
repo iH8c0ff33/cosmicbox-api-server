@@ -24,6 +24,7 @@ type Store interface {
 	GetPressureAvg(start, end time.Time) (float64, error)
 	ResampleEvents(sample time.Duration, start, end time.Time) ([]*model.Bin, error)
 	DeleteEvent(event *model.Event) error
+	DeleteEventsInRange(start, end time.Time) error
 	GetEventsCount() (count int, err error)
 }
 
