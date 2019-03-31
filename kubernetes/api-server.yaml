@@ -13,7 +13,7 @@ spec:
         app: api-server
     spec:
       containers:
-        - image: "danielemonteleone/cosmicbox-api-server:v1.2.0"
+        - image: "danielemonteleone/cosmicbox-api-server:1.2.1"
           args: ["server"]
           name: api-server
           resources:

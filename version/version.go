@@ -6,8 +6,8 @@ import (
 
 var (
 	VersionMajor int64 = 1
-	VersionMinor int64 = 1
-	VersionPatch int64 = 0
+	VersionMinor int64 = 2
+	VersionPatch int64 = 1
 	VersionPre   string
 	VersionDev   string
 )

@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"github.com/urfave/cli"
 	"github.com/iH8c0ff33/cosmicbox-api-server/server"
 	"github.com/iH8c0ff33/cosmicbox-api-server/version"
+	"github.com/urfave/cli"
 )
 
 var flags = []cli.Flag{
@@ -32,10 +32,10 @@ func main() {
 	app.Authors = []cli.Author{
 		{
 			Name:  "Daniele Monteleone",
-			Email: "daniele@monteleone.ml",
+			Email: "daniele.monteleone.it@gmail.com",
 		},
 	}
-	app.Copyright = "(c) 2017 Daniele Monteleone"
+	app.Copyright = "(c) 2019 Daniele Monteleone"
 
 	app.Flags = flags
 
@@ -51,8 +51,4 @@ func main() {
 	}
 
 	app.Run(os.Args)
-	// if err := app.Run(os.Args); err != nil {
-	// 	fmt.Fprintln(os.Stderr, err)
-	// 	os.Exit(1)
-	// }
 }
